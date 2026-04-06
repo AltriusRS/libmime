@@ -1,0 +1,131 @@
+name: Mime-inator
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-mime-inator-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mime-inator-
+
+      - name: Run the Mime-inator
+        run: cargo run -p mime-inator
+
+      - name: Check for changes
+        id: diff
+        run: |
+          FILES="libmime/src/generated.rs libmime/src/generated_map.rs libmime/src/generated_phf.rs"
+          if git diff --quiet $FILES; then
+            echo "No changes detected."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Changes detected:"
+            git diff --stat $FILES
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Format check
+        if: steps.diff.outputs.changed == 'true'
+        run: cargo fmt --check --all
+
+      - name: Clippy (std)
+        if: steps.diff.outputs.changed == 'true'
+        run: cargo clippy -p libmime -- -D warnings
+
+      - name: Clippy (no_std)
+        if: steps.diff.outputs.changed == 'true'
+        run: cargo clippy -p libmime --no-default-features -- -D warnings
+
+      - name: Test (std)
+        if: steps.diff.outputs.changed == 'true'
+        run: cargo test -p libmime
+
+      - name: Test (no_std)
+        if: steps.diff.outputs.changed == 'true'
+        run: cargo test -p libmime --no-default-features
+
+      - name: Bump patch version
+        if: steps.diff.outputs.changed == 'true'
+        id: version
+        run: |
+          TOML="libmime/Cargo.toml"
+          CURRENT=$(grep '^version' "$TOML" | head -1 | sed 's/.*"\(.*\)"/\1/')
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          NEW="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          sed -i "s/^version = \"${CURRENT}\"/version = \"${NEW}\"/" "$TOML"
+          echo "current=${CURRENT}" >> "$GITHUB_OUTPUT"
+          echo "new=${NEW}" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and tag
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "mime-inator[bot]"
+          git config user.email "mime-inator[bot]@users.noreply.github.com"
+
+          git add \
+            libmime/src/generated.rs \
+            libmime/src/generated_map.rs \
+            libmime/src/generated_phf.rs \
+            mime-inator/src/generated.rs \
+            mime-inator/src/generated_map.rs \
+            mime-inator/src/generated_phf.rs \
+            libmime/Cargo.toml
+
+          git commit -m "chore: update MIME types from IANA registry
+
+          Version: ${{ steps.version.outputs.current }} -> ${{ steps.version.outputs.new }}
+          Triggered by: ${{ github.event_name }}
+          Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          git tag "v${{ steps.version.outputs.new }}"
+
+      - name: Push
+        if: steps.diff.outputs.changed == 'true'
+        run: git push --follow-tags
+
+      - name: Publish to crates.io
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: cargo publish -p libmime
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Mime-inator Run Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Field | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|-------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Trigger | \`${{ github.event_name }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Changes | \`${{ steps.diff.outputs.changed }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ steps.diff.outputs.changed }}" = "true" ]; then
+            echo "| Version | \`${{ steps.version.outputs.current }}\` -> \`${{ steps.version.outputs.new }}\` |" >> "$GITHUB_STEP_SUMMARY"
+            echo "| Published | yes |" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "| Version | unchanged |" >> "$GITHUB_STEP_SUMMARY"
+            echo "| Published | skipped |" >> "$GITHUB_STEP_SUMMARY"
+          fi
