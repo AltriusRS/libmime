@@ -2,8 +2,6 @@
 // Do not edit by hand.
 
 use crate::generated::*;
-use crate::{Mime, TopLevel};
-
 pub(crate) static PHF_MAP: phf::Map<&'static str, Mime> = ::phf::Map {
     key: 16287231350648472473,
     disps: &[
