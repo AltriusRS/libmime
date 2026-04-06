@@ -1,0 +1,12 @@
+[package]
+name = "libmime"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+default = ["std"]
+std = ["phf"]
+
+
+[dependencies]
+phf = {version = "0.13.1", features = ["std"], optional=true}

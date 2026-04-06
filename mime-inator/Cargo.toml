@@ -1,0 +1,12 @@
+[package]
+name = "mime-inator"
+version = "0.1.0"
+edition = "2024"
+
+
+[dependencies]
+anyhow = "1"
+csv = "1.4"
+phf_codegen = "0.13"
+reqwest = "0.13"
+tokio = { version = "1.51", features = ["macros", "rt-multi-thread"] }
