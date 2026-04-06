@@ -33,7 +33,13 @@ jobs:
             ${{ runner.os }}-mime-inator-
 
       - name: Run the Mime-inator
-        run: cargo run -p mime-inator
+        id: generate
+        run: |
+          OUTPUT=$(cargo run -p mime-inator 2>&1)
+          echo "$OUTPUT"
+          echo "log<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$OUTPUT" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
 
       - name: Check for changes
         id: diff
@@ -68,20 +74,43 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         run: cargo test -p libmime --no-default-features
 
-      - name: Bump patch version
+      - name: Determine version
         if: steps.diff.outputs.changed == 'true'
         id: version
         run: |
           TOML="libmime/Cargo.toml"
           CURRENT=$(grep '^version' "$TOML" | head -1 | sed 's/.*"\(.*\)"/\1/')
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
-          NEW="${MAJOR}.${MINOR}.$((PATCH + 1))"
+
+          IANA_DATE=$(curl -s "https://www.iana.org/assignments/media-types/media-types.xhtml" \
+            | grep -oP 'Last Updated</th><td>\K\d{4}-\d{2}-\d{2}' \
+            | head -1)
+
+          if [ -z "$IANA_DATE" ]; then
+            echo "Failed to extract IANA last-updated date"
+            exit 1
+          fi
+
+          DATE_PART=$(echo "$IANA_DATE" | tr -d '-')
+
+          MAJOR=$(echo "$CURRENT" | cut -d. -f1)
+          MINOR=$(echo "$CURRENT" | cut -d. -f2)
+
+          NEW="${MAJOR}.${MINOR}.${DATE_PART}"
+
+          if [ "$CURRENT" = "$NEW" ]; then
+            echo "Version ${NEW} already set, skipping."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           sed -i "s/^version = \"${CURRENT}\"/version = \"${NEW}\"/" "$TOML"
+
+          echo "iana_date=${IANA_DATE}" >> "$GITHUB_OUTPUT"
           echo "current=${CURRENT}" >> "$GITHUB_OUTPUT"
           echo "new=${NEW}" >> "$GITHUB_OUTPUT"
 
       - name: Commit and tag
-        if: steps.diff.outputs.changed == 'true'
+        if: steps.diff.outputs.changed == 'true' && steps.version.outputs.new != ''
         run: |
           git config user.name "mime-inator[bot]"
           git config user.email "mime-inator[bot]@users.noreply.github.com"
@@ -98,17 +127,81 @@ jobs:
           git commit -m "chore: update MIME types from IANA registry
 
           Version: ${{ steps.version.outputs.current }} -> ${{ steps.version.outputs.new }}
+          IANA last updated: ${{ steps.version.outputs.iana_date }}
           Triggered by: ${{ github.event_name }}
           Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
           git tag "v${{ steps.version.outputs.new }}"
 
       - name: Push
-        if: steps.diff.outputs.changed == 'true'
+        if: steps.diff.outputs.changed == 'true' && steps.version.outputs.new != ''
         run: git push --follow-tags
 
+      - name: Build release notes
+        if: steps.diff.outputs.changed == 'true' && steps.version.outputs.new != ''
+        id: notes
+        run: |
+          DIFF=$(git diff HEAD~1 -- libmime/src/generated.rs)
+
+          ADDED=$(echo "$DIFF" | grep '^+pub const' | sed 's/^+pub const \([A-Z_]*\):.*/\1/' || true)
+          REMOVED=$(echo "$DIFF" | grep '^-pub const' | sed 's/^-pub const \([A-Z_]*\):.*/\1/' || true)
+
+          ADDED_COUNT=$(echo "$ADDED" | grep -c . || echo 0)
+          REMOVED_COUNT=$(echo "$REMOVED" | grep -c . || echo 0)
+
+          BODY="## libmime v${{ steps.version.outputs.new }}"
+          BODY="${BODY}
+
+          IANA registry last updated: ${{ steps.version.outputs.iana_date }}"
+          BODY="${BODY}
+
+          ### Mime-inator output
+
+          \`\`\`
+          ${{ steps.generate.outputs.log }}
+          \`\`\`"
+
+          if [ "$ADDED_COUNT" -gt 0 ]; then
+            BODY="${BODY}
+
+          ### Added (${ADDED_COUNT})
+
+          \`\`\`
+          ${ADDED}
+          \`\`\`"
+          fi
+
+          if [ "$REMOVED_COUNT" -gt 0 ]; then
+            BODY="${BODY}
+
+          ### Removed (${REMOVED_COUNT})
+
+          \`\`\`
+          ${REMOVED}
+          \`\`\`"
+          fi
+
+          BODY="${BODY}
+
+          ---
+          [Workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+
+          echo "body<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$BODY" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub release
+        if: steps.diff.outputs.changed == 'true' && steps.version.outputs.new != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ steps.version.outputs.new }}" \
+            --title "v${{ steps.version.outputs.new }}" \
+            --notes "${{ steps.notes.outputs.body }}" \
+            --draft
+
       - name: Publish to crates.io
-        if: steps.diff.outputs.changed == 'true'
+        if: steps.diff.outputs.changed == 'true' && steps.version.outputs.new != ''
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         run: cargo publish -p libmime
@@ -116,16 +209,20 @@ jobs:
       - name: Summary
         if: always()
         run: |
-          echo "## Mime-inator Run Summary" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Field | Value |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|-------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Trigger | \`${{ github.event_name }}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Changes | \`${{ steps.diff.outputs.changed }}\` |" >> "$GITHUB_STEP_SUMMARY"
-          if [ "${{ steps.diff.outputs.changed }}" = "true" ]; then
-            echo "| Version | \`${{ steps.version.outputs.current }}\` -> \`${{ steps.version.outputs.new }}\` |" >> "$GITHUB_STEP_SUMMARY"
-            echo "| Published | yes |" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "| Version | unchanged |" >> "$GITHUB_STEP_SUMMARY"
-            echo "| Published | skipped |" >> "$GITHUB_STEP_SUMMARY"
-          fi
+          {
+            echo "## Mime-inator Run Summary"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            echo "| Trigger | \`${{ github.event_name }}\` |"
+            echo "| Changes | \`${{ steps.diff.outputs.changed }}\` |"
+            if [ -n "${{ steps.version.outputs.new }}" ]; then
+              echo "| IANA date | \`${{ steps.version.outputs.iana_date }}\` |"
+              echo "| Version | \`${{ steps.version.outputs.current }}\` -> \`${{ steps.version.outputs.new }}\` |"
+              echo "| Release | [v${{ steps.version.outputs.new }}](https://github.com/${{ github.repository }}/releases/tag/v${{ steps.version.outputs.new }}) (draft) |"
+              echo "| Published | yes |"
+            else
+              echo "| Version | unchanged |"
+              echo "| Published | skipped |"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
