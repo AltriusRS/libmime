@@ -1,12 +1,14 @@
 [package]
 name = "libmime"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+rust-version = "1.66"
+description = "Auto-generated IANA media type constants for Rust"
+license = "MIT"
 
 [features]
 default = ["std"]
 std = ["phf"]
-
 
 [dependencies]
 phf = {version = "0.13.1", features = ["std"], optional=true}
