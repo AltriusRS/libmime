@@ -1,9 +1,9 @@
 {
-  "changed": true,
+  "changed": false,
   "iana_date": "2026-03-27",
   "entry_count": 2236,
-  "version_current": "1.0.20260327-1",
-  "version_new": "1.0.20260327",
+  "version_current": null,
+  "version_new": null,
   "added": [],
   "removed": []
 }

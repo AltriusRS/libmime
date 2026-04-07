@@ -9313,11 +9313,12 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_EXTENDED_PROPERTIES_XML:
 };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.commentauthors+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_COMMENTAUTHORS_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.presentationml.commentauthors",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_COMMENTAUTHORS_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.presentationml.commentauthors",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.comments+xml`
 pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_COMMENTS_XML: Mime = Mime {
@@ -9327,25 +9328,28 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_COMMENTS_
 };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.handoutmaster+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_HANDOUTMASTER_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.presentationml.handoutmaster",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_HANDOUTMASTER_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.presentationml.handoutmaster",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.notesmaster+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_NOTESMASTER_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.presentationml.notesmaster",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_NOTESMASTER_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.presentationml.notesmaster",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.notesslide+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_NOTESSLIDE_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.presentationml.notesslide",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_NOTESSLIDE_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.presentationml.notesslide",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.presentation`
 pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_PRESENTATION: Mime = Mime {
@@ -9355,11 +9359,12 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_PRESENTAT
 };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_PRESENTATION_MAIN_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.presentationml.presentation.main",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_PRESENTATION_MAIN_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.presentationml.presentation.main",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.presprops+xml`
 pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_PRESPROPS_XML: Mime = Mime {
@@ -9376,18 +9381,20 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_SLIDE: Mi
 };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.slidelayout+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_SLIDELAYOUT_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.presentationml.slidelayout",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_SLIDELAYOUT_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.presentationml.slidelayout",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.slidemaster+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_SLIDEMASTER_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.presentationml.slidemaster",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_SLIDEMASTER_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.presentationml.slidemaster",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.slideshow`
 pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_SLIDESHOW: Mime = Mime {
@@ -9397,18 +9404,20 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_SLIDESHOW
 };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.slideshow.main+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_SLIDESHOW_MAIN_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.presentationml.slideshow.main",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_SLIDESHOW_MAIN_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.presentationml.slideshow.main",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.slideupdateinfo+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_SLIDEUPDATEINFO_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.presentationml.slideupdateinfo",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_SLIDEUPDATEINFO_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.presentationml.slideupdateinfo",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.slide+xml`
 pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_SLIDE_XML: Mime = Mime {
@@ -9418,11 +9427,12 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_SLIDE_XML
 };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.tablestyles+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_TABLESTYLES_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.presentationml.tablestyles",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_TABLESTYLES_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.presentationml.tablestyles",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.tags+xml`
 pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_TAGS_XML: Mime = Mime {
@@ -9439,11 +9449,12 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_TEMPLATE:
 };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.template.main+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_TEMPLATE_MAIN_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.presentationml.template.main",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_TEMPLATE_MAIN_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.presentationml.template.main",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.presentationml.viewprops+xml`
 pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_PRESENTATIONML_VIEWPROPS_XML: Mime = Mime {
@@ -9474,39 +9485,44 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_COMMENTS_X
 };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.connections+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_CONNECTIONS_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.spreadsheetml.connections",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_CONNECTIONS_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.spreadsheetml.connections",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.dialogsheet+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_DIALOGSHEET_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.spreadsheetml.dialogsheet",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_DIALOGSHEET_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.spreadsheetml.dialogsheet",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.externallink+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_EXTERNALLINK_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.spreadsheetml.externallink",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_EXTERNALLINK_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.spreadsheetml.externallink",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcachedefinition+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_PIVOTCACHEDEFINITION_XML: Mime = Mime {
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_PIVOTCACHEDEFINITION_XML:
+    Mime = Mime {
     top: TopLevel::Application,
     sub: "vnd.openxmlformats-officedocument.spreadsheetml.pivotcachedefinition",
     suffix: Some("xml"),
 };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcacherecords+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_PIVOTCACHERECORDS_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.spreadsheetml.pivotcacherecords",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_PIVOTCACHERECORDS_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.spreadsheetml.pivotcacherecords",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.pivottable+xml`
 pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_PIVOTTABLE_XML: Mime = Mime {
@@ -9523,25 +9539,28 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_QUERYTABLE
 };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.revisionheaders+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_REVISIONHEADERS_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.spreadsheetml.revisionheaders",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_REVISIONHEADERS_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.spreadsheetml.revisionheaders",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.revisionlog+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_REVISIONLOG_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.spreadsheetml.revisionlog",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_REVISIONLOG_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.spreadsheetml.revisionlog",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.sharedstrings+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_SHAREDSTRINGS_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.spreadsheetml.sharedstrings",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_SHAREDSTRINGS_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.spreadsheetml.sharedstrings",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
 pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_SHEET: Mime = Mime {
@@ -9551,11 +9570,12 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_SHEET: Mim
 };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.sheetmetadata+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_SHEETMETADATA_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.spreadsheetml.sheetmetadata",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_SHEETMETADATA_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.spreadsheetml.sheetmetadata",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml`
 pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_SHEET_MAIN_XML: Mime = Mime {
@@ -9572,11 +9592,12 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_STYLES_XML
 };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.tablesinglecells+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_TABLESINGLECELLS_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.spreadsheetml.tablesinglecells",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_TABLESINGLECELLS_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.spreadsheetml.tablesinglecells",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml`
 pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_TABLE_XML: Mime = Mime {
@@ -9593,11 +9614,12 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_TEMPLATE: 
 };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.template.main+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_TEMPLATE_MAIN_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.spreadsheetml.template.main",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_TEMPLATE_MAIN_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.spreadsheetml.template.main",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.usernames+xml`
 pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_USERNAMES_XML: Mime = Mime {
@@ -9607,7 +9629,8 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_USERNAMES_
 };
 
 /// `application/vnd.openxmlformats-officedocument.spreadsheetml.volatiledependencies+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_VOLATILEDEPENDENCIES_XML: Mime = Mime {
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_SPREADSHEETML_VOLATILEDEPENDENCIES_XML:
+    Mime = Mime {
     top: TopLevel::Application,
     sub: "vnd.openxmlformats-officedocument.spreadsheetml.volatiledependencies",
     suffix: Some("xml"),
@@ -9642,11 +9665,12 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_VMLDRAWING: Mime = Mime 
 };
 
 /// `application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_COMMENTS_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.wordprocessingml.comments",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_COMMENTS_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.wordprocessingml.comments",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.wordprocessingml.document`
 pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_DOCUMENT: Mime = Mime {
@@ -9656,32 +9680,36 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_DOCUMEN
 };
 
 /// `application/vnd.openxmlformats-officedocument.wordprocessingml.document.glossary+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_DOCUMENT_GLOSSARY_XML: Mime = Mime {
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_DOCUMENT_GLOSSARY_XML:
+    Mime = Mime {
     top: TopLevel::Application,
     sub: "vnd.openxmlformats-officedocument.wordprocessingml.document.glossary",
     suffix: Some("xml"),
 };
 
 /// `application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_DOCUMENT_MAIN_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.wordprocessingml.document.main",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_DOCUMENT_MAIN_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.wordprocessingml.document.main",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.wordprocessingml.endnotes+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_ENDNOTES_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.wordprocessingml.endnotes",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_ENDNOTES_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.wordprocessingml.endnotes",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.wordprocessingml.fonttable+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_FONTTABLE_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.wordprocessingml.fonttable",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_FONTTABLE_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.wordprocessingml.fonttable",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml`
 pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_FOOTER_XML: Mime = Mime {
@@ -9691,25 +9719,28 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_FOOTER_
 };
 
 /// `application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_FOOTNOTES_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.wordprocessingml.footnotes",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_FOOTNOTES_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.wordprocessingml.footnotes",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_NUMBERING_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.wordprocessingml.numbering",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_NUMBERING_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.wordprocessingml.numbering",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_SETTINGS_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.wordprocessingml.settings",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_SETTINGS_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.wordprocessingml.settings",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml`
 pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_STYLES_XML: Mime = Mime {
@@ -9726,18 +9757,20 @@ pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_TEMPLAT
 };
 
 /// `application/vnd.openxmlformats-officedocument.wordprocessingml.template.main+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_TEMPLATE_MAIN_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.wordprocessingml.template.main",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_TEMPLATE_MAIN_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.wordprocessingml.template.main",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-officedocument.wordprocessingml.websettings+xml`
-pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_WEBSETTINGS_XML: Mime = Mime {
-    top: TopLevel::Application,
-    sub: "vnd.openxmlformats-officedocument.wordprocessingml.websettings",
-    suffix: Some("xml"),
-};
+pub const APPLICATION_VND_OPENXMLFORMATS_OFFICEDOCUMENT_WORDPROCESSINGML_WEBSETTINGS_XML: Mime =
+    Mime {
+        top: TopLevel::Application,
+        sub: "vnd.openxmlformats-officedocument.wordprocessingml.websettings",
+        suffix: Some("xml"),
+    };
 
 /// `application/vnd.openxmlformats-package.core-properties+xml`
 pub const APPLICATION_VND_OPENXMLFORMATS_PACKAGE_CORE_PROPERTIES_XML: Mime = Mime {
@@ -15653,4 +15686,3 @@ pub const VIDEO_VP9: Mime = Mime {
     sub: "vp9",
     suffix: None,
 };
-

@@ -1,7 +1,7 @@
-use anyhow::{Context, Result, bail};
+use anyhow::{bail, Context, Result};
 use scraper::{Html, Selector};
-use xml::{EventReader, reader::XmlEvent};
 use std::collections::BTreeMap;
+use xml::{reader::XmlEvent, EventReader};
 
 const IANA_BASE: &str = "https://www.iana.org/assignments/media-types";
 const IANA_INDEX: &str = "https://www.iana.org/assignments/media-types/media-types.xml";
