@@ -57,11 +57,7 @@ fn build_generated_rs(entries: &BTreeMap<String, Entry>) -> String {
                  sub: \"{}\",\n    \
                  suffix: {},\n\
              }};\n\n",
-            entry.essence,
-            entry.const_name,
-            entry.top_variant,
-            entry.sub,
-            suffix_expr,
+            entry.essence, entry.const_name, entry.top_variant, entry.sub, suffix_expr,
         ));
     }
 
@@ -77,9 +73,7 @@ fn build_generated_map_rs(entries: &BTreeMap<String, Entry>) -> String {
     out.push_str(AUTO_STRING);
     out.push_str("use crate::generated::*;\n");
     out.push_str("use crate::Mime;\n\n");
-    out.push_str(
-        "pub(crate) static MIME_MAP: &[(&str, Mime)] = &[\n",
-    );
+    out.push_str("pub(crate) static MIME_MAP: &[(&str, Mime)] = &[\n");
 
     for entry in &sorted {
         out.push_str(&format!(
@@ -119,28 +113,18 @@ fn write_file(path: &str, content: &str) -> Result<()> {
         fs::create_dir_all(parent)
             .with_context(|| format!("failed to create {}", parent.display()))?;
     }
-    fs::write(path, content)
-        .with_context(|| format!("failed to write {}", path))?;
+    fs::write(path, content).with_context(|| format!("failed to write {}", path))?;
     info!("  Wrote {}", path);
     Ok(())
 }
 
-pub(crate) fn generate(
-    entries: &BTreeMap<String, Entry>,
-) -> Result<Diff> {
+pub(crate) fn generate(entries: &BTreeMap<String, Entry>) -> Result<Diff> {
     // Read existing consts before overwriting
     let old_consts = read_existing_consts(GENERATED_RS);
-    let new_consts: BTreeSet<String> =
-        entries.keys().cloned().collect();
+    let new_consts: BTreeSet<String> = entries.keys().cloned().collect();
 
-    let added: Vec<String> = new_consts
-        .difference(&old_consts)
-        .cloned()
-        .collect();
-    let removed: Vec<String> = old_consts
-        .difference(&new_consts)
-        .cloned()
-        .collect();
+    let added: Vec<String> = new_consts.difference(&old_consts).cloned().collect();
+    let removed: Vec<String> = old_consts.difference(&new_consts).cloned().collect();
 
     // Build all output
     let generated = build_generated_rs(entries);

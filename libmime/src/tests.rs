@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod tests {
     use crate::{
-        lookup, Mime, TopLevel, APPLICATION_JSON, APPLICATION_VND_API_JSON,
-        IMAGE_SVG_XML, TEXT_HTML, TEXT_PLAIN,
+        lookup, Mime, TopLevel, APPLICATION_JSON, APPLICATION_VND_API_JSON, IMAGE_SVG_XML,
+        TEXT_HTML, TEXT_PLAIN,
     };
 
     #[test]

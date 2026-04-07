@@ -17,11 +17,9 @@ pub(crate) struct Summary {
 
 impl Summary {
     pub(crate) fn write(&self) -> Result<()> {
-        let json = serde_json::to_string_pretty(self)
-            .context("failed to serialize summary")?;
+        let json = serde_json::to_string_pretty(self).context("failed to serialize summary")?;
 
-        fs::write(SUMMARY_PATH, &json)
-            .context("failed to write summary")?;
+        fs::write(SUMMARY_PATH, &json).context("failed to write summary")?;
 
         info!("  Wrote {}", SUMMARY_PATH);
         Ok(())

@@ -3,8 +3,7 @@ use scraper::{Html, Selector};
 use std::collections::BTreeMap;
 
 const IANA_BASE: &str = "https://www.iana.org/assignments/media-types";
-const IANA_INDEX: &str =
-    "https://www.iana.org/assignments/media-types/media-types.xhtml";
+const IANA_INDEX: &str = "https://www.iana.org/assignments/media-types/media-types.xhtml";
 
 const CATEGORIES: &[&str] = &[
     "application",
@@ -52,11 +51,7 @@ fn parse_subtype(raw: &str) -> (String, Option<String>) {
     }
 }
 
-fn build_essence(
-    category: &str,
-    sub: &str,
-    suffix: &Option<String>,
-) -> String {
+fn build_essence(category: &str, sub: &str, suffix: &Option<String>) -> String {
     match suffix {
         Some(s) => format!("{}/{}+{}", category, sub, s),
         None => format!("{}/{}", category, sub),
@@ -65,18 +60,12 @@ fn build_essence(
 
 fn fetch_iana_date(html: &str) -> Result<String> {
     let doc = Html::parse_document(html);
-    let th_selector =
-        Selector::parse("th").expect("failed to parse selector");
-    let td_selector =
-        Selector::parse("td").expect("failed to parse selector");
+    let th_selector = Selector::parse("th").expect("failed to parse selector");
+    let td_selector = Selector::parse("td").expect("failed to parse selector");
 
     // Find the <th> containing "Last Updated" and grab the next <td>
-    for table in doc.select(
-        &Selector::parse("table").expect("failed to parse selector"),
-    ) {
-        for row in table.select(
-            &Selector::parse("tr").expect("failed to parse selector"),
-        ) {
+    for table in doc.select(&Selector::parse("table").expect("failed to parse selector")) {
+        for row in table.select(&Selector::parse("tr").expect("failed to parse selector")) {
             let ths: Vec<_> = row.select(&th_selector).collect();
             let tds: Vec<_> = row.select(&td_selector).collect();
 
@@ -98,9 +87,7 @@ fn fetch_iana_date(html: &str) -> Result<String> {
     anyhow::bail!("could not find 'Last Updated' date in IANA index page")
 }
 
-pub(crate) async fn fetch_entries()
-    -> Result<(BTreeMap<String, Entry>, String)>
-{
+pub(crate) async fn fetch_entries() -> Result<(BTreeMap<String, Entry>, String)> {
     let client = reqwest::Client::builder()
         .user_agent("mime-inator/0.1.0")
         .build()?;
