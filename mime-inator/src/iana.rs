@@ -1,7 +1,10 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
+use scraper::{Html, Selector};
 use std::collections::BTreeMap;
 
 const IANA_BASE: &str = "https://www.iana.org/assignments/media-types";
+const IANA_INDEX: &str =
+    "https://www.iana.org/assignments/media-types/media-types.xhtml";
 
 const CATEGORIES: &[&str] = &[
     "application",
@@ -24,14 +27,12 @@ pub(crate) struct Entry {
     pub(crate) essence: String,
 }
 
-/// Turns e.g. ("application", "vnd.api+json") into "APPLICATION_VND_API_JSON"
 fn const_name(category: &str, subtype: &str) -> String {
     format!("{}_{}", category, subtype)
         .to_ascii_uppercase()
         .replace(['-', '.', '+', ' '], "_")
 }
 
-/// Turns e.g. "application" into "Application"
 fn top_variant(category: &str) -> String {
     let mut chars = category.chars();
     match chars.next() {
@@ -40,7 +41,6 @@ fn top_variant(category: &str) -> String {
     }
 }
 
-/// Splits e.g. "vnd.api+json" into ("vnd.api", Some("json"))
 fn parse_subtype(raw: &str) -> (String, Option<String>) {
     match raw.rfind('+') {
         Some(pos) => {
@@ -52,19 +52,78 @@ fn parse_subtype(raw: &str) -> (String, Option<String>) {
     }
 }
 
-fn build_essence(category: &str, sub: &str, suffix: &Option<String>) -> String {
+fn build_essence(
+    category: &str,
+    sub: &str,
+    suffix: &Option<String>,
+) -> String {
     match suffix {
         Some(s) => format!("{}/{}+{}", category, sub, s),
         None => format!("{}/{}", category, sub),
     }
 }
 
-pub(crate) async fn fetch_entries(client: &reqwest::Client) -> Result<BTreeMap<String, Entry>> {
+fn fetch_iana_date(html: &str) -> Result<String> {
+    let doc = Html::parse_document(html);
+    let th_selector =
+        Selector::parse("th").expect("failed to parse selector");
+    let td_selector =
+        Selector::parse("td").expect("failed to parse selector");
+
+    // Find the <th> containing "Last Updated" and grab the next <td>
+    for table in doc.select(
+        &Selector::parse("table").expect("failed to parse selector"),
+    ) {
+        for row in table.select(
+            &Selector::parse("tr").expect("failed to parse selector"),
+        ) {
+            let ths: Vec<_> = row.select(&th_selector).collect();
+            let tds: Vec<_> = row.select(&td_selector).collect();
+
+            for (i, th) in ths.iter().enumerate() {
+                let text = th.text().collect::<String>();
+                if text.contains("Last Updated") {
+                    if let Some(td) = tds.get(i) {
+                        let date = td.text().collect::<String>();
+                        let date = date.trim().to_string();
+                        if !date.is_empty() {
+                            return Ok(date);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    anyhow::bail!("could not find 'Last Updated' date in IANA index page")
+}
+
+pub(crate) async fn fetch_entries()
+    -> Result<(BTreeMap<String, Entry>, String)>
+{
+    let client = reqwest::Client::builder()
+        .user_agent("mime-inator/0.1.0")
+        .build()?;
+
+    // Fetch the last-updated date from the index page
+    info!("  Fetching {}", IANA_INDEX);
+    let index_html = client
+        .get(IANA_INDEX)
+        .send()
+        .await
+        .context("failed to fetch IANA index page")?
+        .text()
+        .await
+        .context("failed to read IANA index page")?;
+
+    let iana_date = fetch_iana_date(&index_html)?;
+
+    // Fetch each category CSV
     let mut entries = BTreeMap::new();
 
     for &category in CATEGORIES {
         let url = format!("{}/{}.csv", IANA_BASE, category);
-        println!("  Fetching {}", url);
+        info!("  Fetching {}", url);
 
         let body = client
             .get(&url)
@@ -83,7 +142,6 @@ pub(crate) async fn fetch_entries(client: &reqwest::Client) -> Result<BTreeMap<S
         for record in rdr.records().flatten() {
             let name = record.get(0).unwrap_or("").trim();
 
-            // Skip empty, malformed, or DEPRECATED/OBSOLETED entries
             if name.is_empty() || name.contains(' ') {
                 continue;
             }
@@ -102,5 +160,5 @@ pub(crate) async fn fetch_entries(client: &reqwest::Client) -> Result<BTreeMap<S
         }
     }
 
-    Ok(entries)
+    Ok((entries, iana_date))
 }

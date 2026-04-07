@@ -4,9 +4,6 @@ on:
   schedule:
     - cron: "0 6 * * 1"
   workflow_dispatch:
-  push: 
-    branches:
-      - main
 
 permissions:
   contents: write
@@ -14,7 +11,8 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    steps: 
+
+    steps:
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -35,84 +33,41 @@ jobs:
             ${{ runner.os }}-mime-inator-
 
       - name: Run the Mime-inator
-        id: generate
-        run: |
-          OUTPUT=$(cargo run -p mime-inator 2>&1)
-          echo "$OUTPUT"
-          echo "log<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$OUTPUT" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
+        run: cargo run -p mime-inator
 
-      - name: Check for changes
-        id: diff
+      - name: Read summary
+        id: summary
         run: |
-          FILES="libmime/src/generated.rs libmime/src/generated_map.rs libmime/src/generated_phf.rs"
-          if git diff --quiet $FILES; then
-            echo "No changes detected."
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "Changes detected:"
-            git diff --stat $FILES
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
+          echo "changed=$(jq -r '.changed' mime-inator-summary.json)" >> "$GITHUB_OUTPUT"
+          echo "iana_date=$(jq -r '.iana_date' mime-inator-summary.json)" >> "$GITHUB_OUTPUT"
+          echo "entry_count=$(jq -r '.entry_count' mime-inator-summary.json)" >> "$GITHUB_OUTPUT"
+          echo "version_current=$(jq -r '.version_current // empty' mime-inator-summary.json)" >> "$GITHUB_OUTPUT"
+          echo "version_new=$(jq -r '.version_new // empty' mime-inator-summary.json)" >> "$GITHUB_OUTPUT"
+          echo "added_count=$(jq '.added | length' mime-inator-summary.json)" >> "$GITHUB_OUTPUT"
+          echo "removed_count=$(jq '.removed | length' mime-inator-summary.json)" >> "$GITHUB_OUTPUT"
 
       - name: Format check
-        if: steps.diff.outputs.changed == 'true'
+        if: steps.summary.outputs.changed == 'true'
         run: cargo fmt --check --all
 
       - name: Clippy (std)
-        if: steps.diff.outputs.changed == 'true'
+        if: steps.summary.outputs.changed == 'true'
         run: cargo clippy -p libmime -- -D warnings
 
       - name: Clippy (no_std)
-        if: steps.diff.outputs.changed == 'true'
+        if: steps.summary.outputs.changed == 'true'
         run: cargo clippy -p libmime --no-default-features -- -D warnings
 
       - name: Test (std)
-        if: steps.diff.outputs.changed == 'true'
+        if: steps.summary.outputs.changed == 'true'
         run: cargo test -p libmime
 
       - name: Test (no_std)
-        if: steps.diff.outputs.changed == 'true'
+        if: steps.summary.outputs.changed == 'true'
         run: cargo test -p libmime --no-default-features
 
-      - name: Determine version
-        if: steps.diff.outputs.changed == 'true'
-        id: version
-        run: |
-          TOML="libmime/Cargo.toml"
-          CURRENT=$(grep '^version' "$TOML" | head -1 | sed 's/.*"\(.*\)"/\1/')
-
-          IANA_DATE=$(curl -s "https://www.iana.org/assignments/media-types/media-types.xhtml" \
-            | grep -oP 'Last Updated</th><td>\K\d{4}-\d{2}-\d{2}' \
-            | head -1)
-
-          if [ -z "$IANA_DATE" ]; then
-            echo "Failed to extract IANA last-updated date"
-            exit 1
-          fi
-
-          DATE_PART=$(echo "$IANA_DATE" | tr -d '-')
-
-          MAJOR=$(echo "$CURRENT" | cut -d. -f1)
-          MINOR=$(echo "$CURRENT" | cut -d. -f2)
-
-          NEW="${MAJOR}.${MINOR}.${DATE_PART}"
-
-          if [ "$CURRENT" = "$NEW" ]; then
-            echo "Version ${NEW} already set, skipping."
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          sed -i "s/^version = \"${CURRENT}\"/version = \"${NEW}\"/" "$TOML"
-
-          echo "iana_date=${IANA_DATE}" >> "$GITHUB_OUTPUT"
-          echo "current=${CURRENT}" >> "$GITHUB_OUTPUT"
-          echo "new=${NEW}" >> "$GITHUB_OUTPUT"
-
       - name: Commit and tag
-        if: steps.diff.outputs.changed == 'true' && steps.version.outputs.new != ''
+        if: steps.summary.outputs.changed == 'true'
         run: |
           git config user.name "mime-inator[bot]"
           git config user.email "mime-inator[bot]@users.noreply.github.com"
@@ -121,89 +76,74 @@ jobs:
             libmime/src/generated.rs \
             libmime/src/generated_map.rs \
             libmime/src/generated_phf.rs \
-            mime-inator/src/generated.rs \
-            mime-inator/src/generated_map.rs \
-            mime-inator/src/generated_phf.rs \
             libmime/Cargo.toml
 
           git commit -m "chore: update MIME types from IANA registry
 
-          Version: ${{ steps.version.outputs.current }} -> ${{ steps.version.outputs.new }}
-          IANA last updated: ${{ steps.version.outputs.iana_date }}
+          Version: ${{ steps.summary.outputs.version_current }} -> ${{ steps.summary.outputs.version_new }}
+          IANA last updated: ${{ steps.summary.outputs.iana_date }}
+          Types: ${{ steps.summary.outputs.entry_count }}
+          Added: ${{ steps.summary.outputs.added_count }}
+          Removed: ${{ steps.summary.outputs.removed_count }}
           Triggered by: ${{ github.event_name }}
           Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
-          git tag "v${{ steps.version.outputs.new }}"
+          git tag "v${{ steps.summary.outputs.version_new }}"
 
       - name: Push
-        if: steps.diff.outputs.changed == 'true' && steps.version.outputs.new != ''
+        if: steps.summary.outputs.changed == 'true'
         run: git push --follow-tags
 
       - name: Build release notes
-        if: steps.diff.outputs.changed == 'true' && steps.version.outputs.new != ''
+        if: steps.summary.outputs.changed == 'true'
         id: notes
         run: |
-          DIFF=$(git diff HEAD~1 -- libmime/src/generated.rs)
+          ADDED=$(jq -r '.added[]' mime-inator-summary.json || true)
+          REMOVED=$(jq -r '.removed[]' mime-inator-summary.json || true)
 
-          ADDED=$(echo "$DIFF" | grep '^+pub const' | sed 's/^+pub const \([A-Z_]*\):.*/\1/' || true)
-          REMOVED=$(echo "$DIFF" | grep '^-pub const' | sed 's/^-pub const \([A-Z_]*\):.*/\1/' || true)
+          {
+            echo "body<<EOF"
+            echo "## libmime v${{ steps.summary.outputs.version_new }}"
+            echo ""
+            echo "IANA registry last updated: ${{ steps.summary.outputs.iana_date }}"
+            echo "Total types: ${{ steps.summary.outputs.entry_count }}"
+            echo ""
 
-          ADDED_COUNT=$(echo "$ADDED" | grep -c . || echo 0)
-          REMOVED_COUNT=$(echo "$REMOVED" | grep -c . || echo 0)
+            if [ "${{ steps.summary.outputs.added_count }}" -gt 0 ]; then
+              echo "### Added (${{ steps.summary.outputs.added_count }})"
+              echo ""
+              echo '```'
+              echo "$ADDED"
+              echo '```'
+              echo ""
+            fi
 
-          BODY="## libmime v${{ steps.version.outputs.new }}"
-          BODY="${BODY}
+            if [ "${{ steps.summary.outputs.removed_count }}" -gt 0 ]; then
+              echo "### Removed (${{ steps.summary.outputs.removed_count }})"
+              echo ""
+              echo '```'
+              echo "$REMOVED"
+              echo '```'
+              echo ""
+            fi
 
-          IANA registry last updated: ${{ steps.version.outputs.iana_date }}"
-          BODY="${BODY}
-
-          ### Mime-inator output
-
-          \`\`\`
-          ${{ steps.generate.outputs.log }}
-          \`\`\`"
-
-          if [ "$ADDED_COUNT" -gt 0 ]; then
-            BODY="${BODY}
-
-          ### Added (${ADDED_COUNT})
-
-          \`\`\`
-          ${ADDED}
-          \`\`\`"
-          fi
-
-          if [ "$REMOVED_COUNT" -gt 0 ]; then
-            BODY="${BODY}
-
-          ### Removed (${REMOVED_COUNT})
-
-          \`\`\`
-          ${REMOVED}
-          \`\`\`"
-          fi
-
-          BODY="${BODY}
-
-          ---
-          [Workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
-
-          echo "body<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$BODY" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
+            echo "---"
+            echo "[Workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub release
-        if: steps.diff.outputs.changed == 'true' && steps.version.outputs.new != ''
+        if: steps.summary.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "v${{ steps.version.outputs.new }}" \
-            --title "v${{ steps.version.outputs.new }}" \
+          gh release create "v${{ steps.summary.outputs.version_new }}" \
+            --title "v${{ steps.summary.outputs.version_new }}" \
             --notes "${{ steps.notes.outputs.body }}" \
             --draft
 
       - name: Publish to crates.io
-        if: steps.diff.outputs.changed == 'true' && steps.version.outputs.new != ''
+        if: steps.summary.outputs.changed == 'true'
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         run: cargo publish -p libmime
@@ -217,11 +157,14 @@ jobs:
             echo "| Field | Value |"
             echo "|-------|-------|"
             echo "| Trigger | \`${{ github.event_name }}\` |"
-            echo "| Changes | \`${{ steps.diff.outputs.changed }}\` |"
-            if [ -n "${{ steps.version.outputs.new }}" ]; then
-              echo "| IANA date | \`${{ steps.version.outputs.iana_date }}\` |"
-              echo "| Version | \`${{ steps.version.outputs.current }}\` -> \`${{ steps.version.outputs.new }}\` |"
-              echo "| Release | [v${{ steps.version.outputs.new }}](https://github.com/${{ github.repository }}/releases/tag/v${{ steps.version.outputs.new }}) (draft) |"
+            echo "| Changes | \`${{ steps.summary.outputs.changed }}\` |"
+            echo "| IANA date | \`${{ steps.summary.outputs.iana_date }}\` |"
+            echo "| Total types | ${{ steps.summary.outputs.entry_count }} |"
+            if [ "${{ steps.summary.outputs.changed }}" = "true" ]; then
+              echo "| Version | \`${{ steps.summary.outputs.version_current }}\` -> \`${{ steps.summary.outputs.version_new }}\` |"
+              echo "| Added | ${{ steps.summary.outputs.added_count }} |"
+              echo "| Removed | ${{ steps.summary.outputs.removed_count }} |"
+              echo "| Release | [v${{ steps.summary.outputs.version_new }}](https://github.com/${{ github.repository }}/releases/tag/v${{ steps.summary.outputs.version_new }}) (draft) |"
               echo "| Published | yes |"
             else
               echo "| Version | unchanged |"

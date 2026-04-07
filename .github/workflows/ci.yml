@@ -1,0 +1,105 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  fmt:
+    name: Format
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+
+      - name: Check formatting
+        run: cargo fmt --check --all
+
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - libmime
+          - mime-inator
+        args:
+          - ""
+          - "--no-default-features"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - name: Run clippy
+        run: |
+          if [ "${{ matrix.package }}" = "mime-inator" ] && \
+             [ "${{ matrix.args }}" = "--no-default-features" ]; then
+            echo "Skipping unsupported combination"
+            exit 0
+          fi
+
+          cargo clippy -p ${{ matrix.package }} ${{ matrix.args }} -- -D warnings
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - package: libmime
+            args: ""
+            label: "libmime (std)"
+          - package: libmime
+            args: "--no-default-features"
+            label: "libmime (no_std feature set)"
+          - package: mime-inator
+            args: ""
+            label: "mime-inator"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Run tests
+        run: cargo test -p ${{ matrix.package }} ${{ matrix.args }}
+
+  generated:
+    name: Generated files are up to date
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Run Mime-inator
+        run: cargo run -p mime-inator
+
+      - name: Check generated files
+        run: |
+          git diff --exit-code -- \
+            libmime/src/generated.rs \
+            libmime/src/generated_map.rs \
+            libmime/src/generated_phf.rs

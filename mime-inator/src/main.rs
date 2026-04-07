@@ -1,28 +1,67 @@
 use anyhow::Result;
+use log::LevelFilter;
+
+extern crate pretty_env_logger;
+#[macro_use]
+extern crate log;
 
 pub(crate) mod generator;
 pub(crate) mod iana;
+pub(crate) mod summary;
+pub(crate) mod version;
+
+use crate::summary::Summary;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    println!("Mime-inator activated!");
-    println!();
+    pretty_env_logger::formatted_timed_builder()
+        .filter_level(LevelFilter::Info)
+        .init();
 
-    println!("Fetching IANA registry...");
-    let client = reqwest::Client::builder()
-        .user_agent("mime-inator/0.1.0")
-        .build()?;
+    info!("Mime-inator activated!");
 
-    let entries = crate::iana::fetch_entries(&client).await?;
-    println!();
-    println!("Found {} MIME types", entries.len());
-    println!();
+    info!("Fetching IANA registry...");
+    let (entries, iana_date) = crate::iana::fetch_entries().await?;
+    info!("Found {} MIME types", entries.len());
+    info!("IANA last updated: {}", iana_date);
 
-    println!("Generating code...");
-    crate::generator::generate(&entries)?;
+    info!("Generating code...");
+    let diff = crate::generator::generate(&entries)?;
 
-    println!();
-    println!(
+    if !diff.changed {
+        info!("No changes detected. Nothing to do.");
+        let summary = Summary {
+            changed: false,
+            iana_date,
+            entry_count: entries.len(),
+            version_current: None,
+            version_new: None,
+            added: vec![],
+            removed: vec![],
+        };
+        summary.write()?;
+        return Ok(());
+    }
+
+    info!("{} added, {} removed", diff.added.len(), diff.removed.len());
+
+    info!("Updating version...");
+    let (current, new) = crate::version::update(&iana_date)?;
+    info!("Version: {} -> {}", current, new);
+
+    let summary = Summary {
+        changed: true,
+        iana_date,
+        entry_count: entries.len(),
+        version_current: Some(current),
+        version_new: Some(new),
+        added: diff.added,
+        removed: diff.removed,
+    };
+
+    summary.write()?;
+
+    info!(
         "Mime-inator complete! \
          Behold, {} MIME types of the entire tri-state area!",
         entries.len()
