@@ -1,6 +1,6 @@
-pub mod mime;
-pub mod lookup;
 pub mod generated;
+pub mod lookup;
+pub mod mime;
 
-pub use mime::{Mime, TopLevel};
 pub use lookup::lookup;
+pub use mime::{Mime, TopLevel};

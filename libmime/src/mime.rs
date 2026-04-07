@@ -1,24 +1,65 @@
 // src/mime.rs
 
-/// A known IANA media type.
+/// A known [IANA media type](https://www.iana.org/assignments/media-types/media-types.xhtml).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Mime {
+    /// The group to which the media type belongs.
+    /// E.g. `application`
+    /// This is the segment before the `/`
     pub top: TopLevel,
+
+    /// The subgroup of the media type.
+    /// E.g. `json`
+    /// This is the segment after the `/`
     pub sub: &'static str,
+
+    /// The suffic appended to the media type.
+    /// E.g. `xml`
+    /// This is the `+<suffix>` segment of the media type
     pub suffix: Option<&'static str>,
 }
 
+/// An enum representing the different top level media types as defined in [IANA: RFC9694 - Section 4.2](https://datatracker.ietf.org/doc/html/rfc9694)
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum TopLevel {
+    /// Application media types.
+    /// See [IANA RFC 2046](https://datatracker.ietf.org/doc/html/rfc2046)
     Application,
+
+    /// Audio media types.
+    /// See [IANA RFC 2046](https://datatracker.ietf.org/doc/html/rfc2046)
     Audio,
+
+    /// Font media types.
+    /// See [IANA RFC 8081](https://datatracker.ietf.org/doc/html/rfc8081)
     Font,
+
+    /// Haptics media types.
+    /// See [IANA RFC 9695](https://datatracker.ietf.org/doc/html/rfc9695)
     Haptics,
+
+    /// Image media types.
+    /// See [IANA RFC 2046](https://datatracker.ietf.org/doc/html/rfc2046)
     Image,
+
+    /// Message media types.
+    /// See [IANA RFC 2046](https://datatracker.ietf.org/doc/html/rfc2046)
     Message,
+
+    /// Model media types.
+    /// See [IANA RFC 2077](https://datatracker.ietf.org/doc/html/rfc2077)
     Model,
+
+    /// Multipart media types.
+    /// See [IANA RFC 2046](https://datatracker.ietf.org/doc/html/rfc2046)
     Multipart,
+
+    /// Text media types - Requires CRLF for newlines.
+    /// See [IANA RFC 2046](https://datatracker.ietf.org/doc/html/rfc2046)
     Text,
+
+    /// Video media types.
+    /// See [IANA RFC 2046](https://datatracker.ietf.org/doc/html/rfc2046)
     Video,
 }
 
@@ -40,8 +81,6 @@ impl TopLevel {
 }
 
 impl Mime {
-    /// The full essence string at compile time isn't possible,
-    /// but we can reconstruct it cheaply.
     pub const fn type_str(&self) -> &'static str {
         self.top.as_str()
     }

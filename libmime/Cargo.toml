@@ -13,4 +13,4 @@ default = ["std"]
 std = ["phf"]
 
 [dependencies]
-phf = {version = "0.13.1", features = ["std"], optional=true}
+phf = { version = "0.13.1", features = ["std"], optional = true }
