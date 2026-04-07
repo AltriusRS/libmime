@@ -2,6 +2,8 @@
 // Do not edit by hand.
 // Source: IANA Media Types Registry
 
+use crate::{Mime, TopLevel};
+
 /// `application/1d-interleaved-parityfec`
 pub const APPLICATION_1D_INTERLEAVED_PARITYFEC: Mime = Mime {
     top: TopLevel::Application,

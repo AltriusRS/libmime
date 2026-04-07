@@ -1,5 +1,4 @@
 use anyhow::{bail, Context, Result};
-use scraper::{Html, Selector};
 use std::collections::BTreeMap;
 use xml::{reader::XmlEvent, EventReader};
 
@@ -68,7 +67,6 @@ fn fetch_iana_date(xml: &str) -> Result<String> {
             XmlEvent::StartElement { name, .. } if name.local_name == "updated" => {
                 in_updated = true;
             }
-            XmlEvent::StartElement { name, .. } => {}
             XmlEvent::Characters(text) | XmlEvent::CData(text) => {
                 if in_updated {
                     let date = text.trim();

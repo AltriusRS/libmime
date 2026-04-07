@@ -2,6 +2,8 @@
 // Do not edit by hand.
 // Source: IANA Media Types Registry
 
+use crate::generated::*;
+
 pub(crate) static PHF_MAP: phf::Map<&'static str, Mime> = ::phf::Map {
     key: 16287231350648472473,
     disps: &[

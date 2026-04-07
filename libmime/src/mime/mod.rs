@@ -1,5 +1,7 @@
 // src/mime.rs
 
+use crate::TopLevel;
+
 pub mod toplevel;
 
 /// A known [IANA media type](https://www.iana.org/assignments/media-types/media-types.xhtml).

@@ -42,6 +42,7 @@ fn build_generated_rs(entries: &BTreeMap<String, Entry>) -> String {
     let mut out = String::new();
 
     out.push_str(AUTO_STRING);
+    out.push_str("use crate::{Mime, TopLevel};\n\n");
 
     for entry in entries.values() {
         let suffix_expr = match &entry.suffix {
@@ -70,6 +71,7 @@ fn build_generated_map_rs(entries: &BTreeMap<String, Entry>) -> String {
     let mut out = String::new();
 
     out.push_str(AUTO_STRING);
+    out.push_str("use crate::generated::*;\n\n");
     out.push_str("pub(crate) static MIME_MAP: &[(&str, Mime)] = &[\n");
 
     for entry in &sorted {
@@ -94,6 +96,7 @@ fn build_generated_phf_rs(entries: &BTreeMap<String, Entry>) -> String {
     let mut out = String::new();
 
     out.push_str(AUTO_STRING);
+    out.push_str("use crate::generated::*;\n\n");
     out.push_str(&format!(
         "pub(crate) static PHF_MAP: phf::Map<&'static str, Mime> \
          = {};\n",

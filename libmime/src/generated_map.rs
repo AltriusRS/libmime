@@ -2,6 +2,8 @@
 // Do not edit by hand.
 // Source: IANA Media Types Registry
 
+use crate::generated::*;
+
 pub(crate) static MIME_MAP: &[(&str, Mime)] = &[
     ("application/1d-interleaved-parityfec", APPLICATION_1D_INTERLEAVED_PARITYFEC),
     ("application/3gpdash-qoe-report+xml", APPLICATION_3GPDASH_QOE_REPORT_XML),
