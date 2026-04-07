@@ -79,26 +79,11 @@ pub struct Mime {
 - `Text`
 - `Video`
 
-## How Updates Work
+## Versioning
 
-A scheduled GitHub Actions workflow runs weekly and executes the
-code generator (internally referred to as the "Mime-inator"). It
-fetches the current CSV data from the IANA registry, regenerates
-the constant definitions and lookup tables, and compares them
-against the committed versions. If nothing has changed, the run
-exits early. If the generated output differs, it runs the full
-test and lint suite, bumps the patch version, commits, tags, and
-publishes to crates.io.
+This crate uses the `major.minor.IANA_UPDATED(+patch)` pattern, where patch is optional, and IANA_UPDATED is the date provided in the page [Media Types.xhtml](https://www.iana.org/assignments/media-types/media-types.xhtml) under the `Last Updated` section, minus the dashes.
 
-The generator source lives in `generator/`.
-
-## Scope
-
-This crate does one thing: it gives you typed constants for known
-IANA media types and a way to look them up by string. It does not
-parse arbitrary media type strings, handle parameters like
-`charset` or `boundary`, or deal with content negotiation. If you
-need that, this is not the right crate.
+The date is formatted as YYYYMMDD
 
 ## Minimum Supported Rust Version
 
