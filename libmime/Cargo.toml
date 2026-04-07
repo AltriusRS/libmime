@@ -1,6 +1,6 @@
 [package]
 name = "libmime"
-version = "1.0.20260327"
+version = "1.0.20260327-1"
 edition = "2021"
 rust-version = "1.66"
 description = "Auto-generated IANA media type constants for Rust"
