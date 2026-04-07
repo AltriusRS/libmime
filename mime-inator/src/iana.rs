@@ -1,9 +1,10 @@
-use anyhow::{Context, Result};
+use anyhow::{Context, Result, bail};
 use scraper::{Html, Selector};
+use xml::{EventReader, reader::XmlEvent};
 use std::collections::BTreeMap;
 
 const IANA_BASE: &str = "https://www.iana.org/assignments/media-types";
-const IANA_INDEX: &str = "https://www.iana.org/assignments/media-types/media-types.xhtml";
+const IANA_INDEX: &str = "https://www.iana.org/assignments/media-types/media-types.xml";
 
 const CATEGORIES: &[&str] = &[
     "application",
@@ -58,33 +59,34 @@ fn build_essence(category: &str, sub: &str, suffix: &Option<String>) -> String {
     }
 }
 
-fn fetch_iana_date(html: &str) -> Result<String> {
-    let doc = Html::parse_document(html);
-    let th_selector = Selector::parse("th").expect("failed to parse selector");
-    let td_selector = Selector::parse("td").expect("failed to parse selector");
+fn fetch_iana_date(xml: &str) -> Result<String> {
+    let parser = EventReader::from_str(xml);
+    let mut in_updated = false;
 
-    // Find the <th> containing "Last Updated" and grab the next <td>
-    for table in doc.select(&Selector::parse("table").expect("failed to parse selector")) {
-        for row in table.select(&Selector::parse("tr").expect("failed to parse selector")) {
-            let ths: Vec<_> = row.select(&th_selector).collect();
-            let tds: Vec<_> = row.select(&td_selector).collect();
-
-            for (i, th) in ths.iter().enumerate() {
-                let text = th.text().collect::<String>();
-                if text.contains("Last Updated") {
-                    if let Some(td) = tds.get(i) {
-                        let date = td.text().collect::<String>();
-                        let date = date.trim().to_string();
-                        if !date.is_empty() {
-                            return Ok(date);
-                        }
+    for event in parser {
+        match event.context("failed to parse IANA XML")? {
+            XmlEvent::StartElement { name, .. } if name.local_name == "updated" => {
+                in_updated = true;
+            }
+            XmlEvent::StartElement { name, .. } => {}
+            XmlEvent::Characters(text) | XmlEvent::CData(text) => {
+                if in_updated {
+                    let date = text.trim();
+                    if !date.is_empty() {
+                        return Ok(date.to_string());
                     }
                 }
             }
+            XmlEvent::EndElement { name } => {
+                if name.local_name == "updated" {
+                    in_updated = false;
+                }
+            }
+            _ => {}
         }
     }
 
-    anyhow::bail!("could not find 'Last Updated' date in IANA index page")
+    bail!("could not find <updated>...</updated> in IANA XML index")
 }
 
 pub(crate) async fn fetch_entries() -> Result<(BTreeMap<String, Entry>, String)> {

@@ -81,7 +81,7 @@ pub struct Mime {
 
 ## Versioning
 
-This crate uses the `major.minor.IANA_UPDATED(-patch)` pattern, where patch is optional, and IANA_UPDATED is the date provided in the page [Media Types.xhtml](https://www.iana.org/assignments/media-types/media-types.xhtml) under the `Last Updated` section, minus the dashes.
+This crate uses the `major.minor.IANA_UPDATED(-patch)` pattern, where patch is optional, and IANA_UPDATED is the date provided in the page [Media Types.xhtml](https://www.iana.org/assignments/media-types/media-types.xml) under the `Last Updated` section, minus the dashes.
 
 The date is formatted as YYYYMMDD
 
